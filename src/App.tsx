@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { generator } from './utils/markov';
+import { TRANSLATIONS } from './translations';
 
 const LANGUAGES = [
   { code: 'es', name: 'Español (Cervantes)' },
@@ -10,13 +11,22 @@ const LANGUAGES = [
 ];
 
 function App() {
-  const [lang, setLang] = useState('es');
+  // Detectar idioma del navegador o usar 'es' por defecto
+  const browserLang = navigator.language.split('-')[0];
+  const defaultLang = LANGUAGES.some(l => l.code === browserLang) ? browserLang : 'es';
+
+  const [lang, setLang] = useState(defaultLang);
   const [count, setCount] = useState(3);
   const [type, setType] = useState<'paragraphs' | 'sentences' | 'words' | 'characters'>('paragraphs');
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
   const [modelReady, setModelReady] = useState(false);
+  const [copied, setCopied] = useState(false);
 
+  // Obtener traducciones actuales
+  const t = TRANSLATIONS[lang] || TRANSLATIONS['es'];
+
+  // Cargar modelo cuando cambia el idioma
   useEffect(() => {
     const load = async () => {
       setLoading(true);
@@ -24,8 +34,9 @@ function App() {
       try {
         await generator.loadModel(lang);
         setModelReady(true);
-        // Generar inicial
-        handleGenerate();
+        // Generar un texto inicial automáticamente una vez cargado
+        const initialText = generator.generate(count, type);
+        setText(initialText);
       } catch (e) {
         console.error("Error loading model", e);
       } finally {
@@ -36,104 +47,127 @@ function App() {
   }, [lang]);
 
   const handleGenerate = () => {
-    // Pequeño timeout para permitir que el estado de loading se renderice si fuera necesario, 
-    // aunque aquí es síncrono una vez cargado el modelo.
     const result = generator.generate(count, type);
     setText(result);
   };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(text);
-    alert('Texto copiado al portapapeles');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
+  // Ajustar el límite máximo del input según el tipo
+  const maxCount = type === 'characters' ? 5000 : 100;
+
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-3xl w-full space-y-8">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      
+      {/* Card Container Centrado */}
+      <div className="w-full max-w-2xl bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700 transition-colors duration-300">
         
         {/* Header */}
-        <div className="text-center">
-          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 tracking-tight sm:text-5xl mb-2">
-            Ipsum Gen
+        <div className="p-8 pb-6 text-center border-b border-slate-100 dark:border-slate-700">
+          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-cyan-500 mb-2">
+            {t.title}
           </h1>
-          <p className="text-lg text-gray-400">
-            Generador de texto de relleno realista basado en literatura clásica.
+          <p className="text-slate-500 dark:text-slate-400">
+            {t.subtitle}
           </p>
         </div>
 
-        {/* Controls */}
-        <div className="bg-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Controls Section */}
+        <div className="p-8 bg-slate-50 dark:bg-slate-800/50 space-y-6">
           
-          {/* Language Selector */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-300">Idioma</label>
-            <select 
-              value={lang} 
-              onChange={(e) => setLang(e.target.value)}
-              className="bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
-            >
-              {LANGUAGES.map((l) => (
-                <option key={l.code} value={l.code}>{l.name}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Count & Type */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-300">Cantidad</label>
-            <div className="flex space-x-2">
-              <input 
-                type="number" 
-                min="1" 
-                max={type === 'characters' ? 5000 : 100} 
-                value={count} 
-                onChange={(e) => setCount(Number(e.target.value))}
-                className="bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-20 p-2.5"
-              />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Language Selector */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                {t.language}
+              </label>
               <select 
-                value={type} 
-                onChange={(e) => setType(e.target.value as any)}
-                className="bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+                value={lang} 
+                onChange={(e) => setLang(e.target.value)}
+                className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
               >
-                <option value="paragraphs">Párrafos</option>
-                <option value="sentences">Frases</option>
-                <option value="words">Palabras</option>
-                <option value="characters">Caracteres</option>
+                {LANGUAGES.map((l) => (
+                  <option key={l.code} value={l.code}>{l.name}</option>
+                ))}
               </select>
+            </div>
+
+            {/* Count & Type Selector */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                {t.count}
+              </label>
+              <div className="flex gap-3">
+                <input 
+                  type="number" 
+                  min="1" 
+                  max={maxCount}
+                  value={count} 
+                  onChange={(e) => setCount(Number(e.target.value))}
+                  className="w-24 px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center"
+                />
+                <select 
+                  value={type} 
+                  onChange={(e) => setType(e.target.value as any)}
+                  className="flex-1 px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                >
+                  <option value="paragraphs">{t.types.paragraphs}</option>
+                  <option value="sentences">{t.types.sentences}</option>
+                  <option value="words">{t.types.words}</option>
+                  <option value="characters">{t.types.characters}</option>
+                </select>
+              </div>
             </div>
           </div>
 
           {/* Generate Button */}
-          <div className="flex items-end">
-            <button 
-              onClick={handleGenerate}
-              disabled={loading || !modelReady}
-              className={`w-full text-white font-bold py-2.5 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 ease-in-out ${
-                loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
-              }`}
-            >
-              {loading ? 'Cargando modelo...' : 'Generar Texto'}
-            </button>
-          </div>
-        </div>
-
-        {/* Output Area */}
-        <div className="relative">
-          <textarea 
-            readOnly
-            value={text}
-            className="w-full h-96 p-4 bg-gray-100 text-gray-900 rounded-xl shadow-inner border border-gray-300 focus:ring-2 focus:ring-indigo-500 resize-none font-serif text-lg leading-relaxed"
-          />
           <button 
-            onClick={copyToClipboard}
-            className="absolute top-4 right-4 bg-gray-800 text-white text-xs px-3 py-1 rounded hover:bg-gray-700 opacity-80 hover:opacity-100 transition"
+            onClick={handleGenerate}
+            disabled={loading || !modelReady}
+            className={`w-full py-3 px-6 rounded-xl font-bold text-white shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] ${
+              loading 
+                ? 'bg-slate-400 cursor-not-allowed' 
+                : 'bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 shadow-indigo-500/30'
+            }`}
           >
-            Copiar
+            {loading ? t.loading : t.generate}
           </button>
         </div>
 
-        <div className="text-center text-xs text-gray-500">
-          <p>Hecho con ❤️ usando Cadenas de Markov y React.</p>
+        {/* Output Section */}
+        <div className="relative border-t border-slate-200 dark:border-slate-700">
+          <textarea 
+            readOnly
+            value={text}
+            placeholder={t.placeholder}
+            className="w-full h-80 p-8 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 resize-none outline-none font-serif text-lg leading-relaxed"
+          />
+          
+          {/* Copy Button (Floating) */}
+          <button 
+            onClick={copyToClipboard}
+            className={`absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 border ${
+              copied 
+                ? 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' 
+                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700'
+            } shadow-sm`}
+          >
+            {copied ? (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                {t.copied}
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                {t.copy}
+              </>
+            )}
+          </button>
         </div>
 
       </div>
