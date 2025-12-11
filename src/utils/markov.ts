@@ -23,7 +23,7 @@ export class MarkovGenerator {
     }
   }
 
-  generate(count: number, type: 'words' | 'sentences' | 'paragraphs' = 'paragraphs'): string {
+  generate(count: number, type: 'words' | 'sentences' | 'paragraphs' | 'characters' = 'paragraphs'): string {
     if (!this.currentLang || !this.models[this.currentLang]) return "Model not loaded.";
     
     const chain = this.models[this.currentLang];
@@ -63,6 +63,15 @@ export class MarkovGenerator {
         }
         return sentence.join(" ");
     };
+
+    if (type === 'characters') {
+        let buffer = "";
+        while (buffer.length < count) {
+            const s = generateSentence();
+            buffer += (buffer.length > 0 ? " " : "") + s;
+        }
+        return buffer.slice(0, count);
+    }
 
     if (type === 'words') {
        // Generar hasta alcanzar X palabras

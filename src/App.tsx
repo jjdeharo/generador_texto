@@ -12,7 +12,7 @@ const LANGUAGES = [
 function App() {
   const [lang, setLang] = useState('es');
   const [count, setCount] = useState(3);
-  const [type, setType] = useState<'paragraphs' | 'sentences' | 'words'>('paragraphs');
+  const [type, setType] = useState<'paragraphs' | 'sentences' | 'words' | 'characters'>('paragraphs');
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
   const [modelReady, setModelReady] = useState(false);
@@ -85,7 +85,7 @@ function App() {
               <input 
                 type="number" 
                 min="1" 
-                max="100" 
+                max={type === 'characters' ? 5000 : 100} 
                 value={count} 
                 onChange={(e) => setCount(Number(e.target.value))}
                 className="bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-20 p-2.5"
@@ -98,6 +98,7 @@ function App() {
                 <option value="paragraphs">Párrafos</option>
                 <option value="sentences">Frases</option>
                 <option value="words">Palabras</option>
+                <option value="characters">Caracteres</option>
               </select>
             </div>
           </div>
