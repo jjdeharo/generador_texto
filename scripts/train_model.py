@@ -8,12 +8,11 @@ import random
 SOURCES = {
     "es": "https://www.gutenberg.org/cache/epub/2000/pg2000.txt",  # Don Quijote
     "en": "https://www.gutenberg.org/cache/epub/11/pg11.txt",      # Alice in Wonderland
-    "ca": "https://www.gutenberg.org/cache/epub/63283/pg63283.txt", # Tirant lo Blanc (Partial/Short) or similar. 
-    # Fallback for CA if 63283 is not ideal, we try to process whatever we get.
-    "ga": "https://www.gutenberg.org/cache/epub/17659/pg17659.txt", # Cantares Gallegos
-    # Para Euskera (EU), usaremos un placeholder o texto manual si no hay URL estable.
-    # Intentaremos una URL de ejemplo si existe, sino requerirá archivo local.
-    "eu": "MANUAL" 
+    "ca": "https://www.gutenberg.org/cache/epub/15194/pg15194.txt", # Àngel Guimerà - Terra baixa
+    "ga": "https://www.gutenberg.org/cache/epub/59037/pg59037.txt", # Rosalía de Castro - Cantares gallegos
+    # Para Euskera (EU) seguimos usando texto manual (Lizarrako Estatutua 1931, desde Wikisource).
+    "eu": "MANUAL",
+    "la": "MANUAL",  # Lorem ipsum clásico
 }
 
 OUTPUT_DIR = "scripts/models"
