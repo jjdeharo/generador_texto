@@ -11,7 +11,8 @@ export class MarkovGenerator {
     }
 
     try {
-      const response = await fetch(`/models/${lang}.json`);
+      // Usamos import.meta.env.BASE_URL para que funcione tanto en local como en GitHub Pages
+      const response = await fetch(`${import.meta.env.BASE_URL}models/${lang}.json`);
       if (!response.ok) throw new Error(`Failed to load model for ${lang}`);
       const data = await response.json();
       this.models[lang] = data;
