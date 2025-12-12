@@ -1,73 +1,25 @@
-# React + TypeScript + Vite
+# Generador de Texto Realista
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación educativa que crea texto verosímil en varios idiomas a partir de cadenas de Markov entrenadas con literatura clásica. Sirve para maquetar, probar interfaces o practicar actividades en el aula con contenido ficticio pero coherente.
 
-Currently, two official plugins are available:
+## Características principales
+- Modelos específicos para español, catalán, gallego, euskera, inglés y latín.
+- Generación configurable por párrafos, frases, palabras o caracteres.
+- Métricas rápidas del texto generado y botón de copiado.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Uso rápido
+1. Selecciona el idioma y el número de unidades que necesitas.
+2. Escoge el tipo de unidad (párrafos, frases, palabras o caracteres).
+3. Pulsa **Generar Texto** y copia el resultado cuando estés satisfecho.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Desarrollo local
+```bash
+npm install
+npm run dev
+# o modo producción
+npm run build && npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Licencias y atribución
+- **Código**: [Licencia AGPL v3](https://www.gnu.org/licenses/agpl-3.0.html). Generador de Texto Realista © 2025 Juan José de Haro — <https://jjdeharo.github.io/generador_texto/>.
+- **Contenidos y documentación**: [Creative Commons Reconocimiento 4.0 Internacional (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). Cita como “Generador de Texto Realista, Juan José de Haro, 2025”.

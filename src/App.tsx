@@ -1,3 +1,4 @@
+// Generador de Texto Realista (c) 2025 Juan José de Haro - Licencia AGPL v3: https://www.gnu.org/licenses/agpl-3.0.html
 import { useState, useEffect, useMemo } from 'react';
 import { generator } from './utils/markov';
 import { TRANSLATIONS } from './translations';
@@ -81,7 +82,7 @@ function App() {
   }, [text]);
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center gap-6 p-4 bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
       
       {/* Card Container Centrado */}
       <div className="w-full max-w-2xl bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700 transition-colors duration-300">
@@ -226,6 +227,28 @@ function App() {
         </div>
 
       </div>
+
+      <footer className="text-center text-sm text-slate-600 dark:text-slate-300 space-y-1">
+        <p>
+          Generador de Texto Realista © 2025{' '}
+          <a
+            className="font-medium underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-300"
+            href="https://bilateria.org"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Juan José de Haro
+          </a>
+        </p>
+        <a
+          className="font-medium underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-300"
+          href="https://www.gnu.org/licenses/agpl-3.0.html"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Licencia del código: AGPL v3
+        </a>
+      </footer>
     </div>
   );
 }
